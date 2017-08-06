@@ -1,7 +1,5 @@
-import io.circe._, io.circe.parser._, io.circe.syntax._
-
-object Codecs {
-	import io.circe.generic.auto._
+ object Codecs { 
+ import io.circe._, io.circe.generic.auto._, io.circe.parser._, io.circe.syntax._
 implicit val dCC0 = implicitly[Decoder[CC0]]
 implicit val dCC1 = implicitly[Decoder[CC1]]
 implicit val dCC2 = implicitly[Decoder[CC2]]
@@ -203,4 +201,4 @@ implicit val dCC197 = implicitly[Decoder[CC197]]
 implicit val dCC198 = implicitly[Decoder[CC198]]
 implicit val dCC199 = implicitly[Decoder[CC199]]
 implicit val dCC200 = implicitly[Decoder[CC200]]
-}
+ }

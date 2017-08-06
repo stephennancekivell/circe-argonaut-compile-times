@@ -3,7 +3,7 @@ import scala.util.Random
 
 val numCaseClasses = 200
 val minValues = 5
-val maxValues = 30
+val maxValues = 15
 
 def randomType(maxCaseClass: Int): String = {
 	if (Random.nextBoolean || maxCaseClass == 0) {
@@ -18,7 +18,7 @@ def randomType(maxCaseClass: Int): String = {
 	}
 }
 
-val out = (0 to numCaseClasses).map { i =>
+val caseClasses = (0 to numCaseClasses).map { i =>
 	val noValues = (Random.nextInt % maxValues).abs + minValues
 	val values = (0 to noValues).map {	v =>
 		s"v$v: ${randomType(i)}"
@@ -28,7 +28,7 @@ val out = (0 to numCaseClasses).map { i =>
 }
 
 println("\n\n")
-out.foreach(println)
+caseClasses.foreach(println)
 println("")
 
 def circeSemiAuto(): String = {
@@ -36,7 +36,7 @@ def circeSemiAuto(): String = {
 		s"implicit val dCC$i: Decoder[CC$i] = deriveDecoder"
 	}
 
-	"import io.circe.generic.semiauto._\n" + decoders.mkString("\n")
+	" object Codecs { \n import io.circe._,  io.circe.parser._, io.circe.syntax._, import io.circe.generic.semiauto._\n" + decoders.mkString("\n") + "\n }"
 }
 
 def circeAuto(): String = {
@@ -44,14 +44,22 @@ def circeAuto(): String = {
 		s"implicit val dCC$i = implicitly[Decoder[CC$i]]"
 	}
 
-	"import io.circe.generic.auto._\n" + decoders.mkString("\n")
+	" object Codecs { \n import io.circe._, io.circe.generic.auto._, io.circe.parser._, io.circe.syntax._\n" + decoders.mkString("\n") + "\n }"
 }
 
 def argonaut(): String = {
 	val decoders = (0 to numCaseClasses).map { i =>
 		s"implicit val dCC$i = DecodeJson.of[CC$i]"
 	}
-	"import ArgonautShapeless._\n" + decoders.mkString("\n")
+	" object Codecs { \n import ArgonautShapeless._\n" + decoders.mkString("\n") + " \n }"
+	
+}
+
+def play(): String = {
+val decoders = (0 to numCaseClasses).map { i =>
+		s"implicit val dCC$i: Reads[CC$i] = Json.reads[CC$i]"
+	}
+	" object Codecs { \n import play.api.libs.json._\n" + decoders.mkString("\n") + "\n }"
 	
 }
 
@@ -61,3 +69,19 @@ println("\nsemi-auto\n")
 println(circeSemiAuto())
 println("\nauto\n")
 println(circeAuto())
+println("\nauto\n")
+println(play())
+
+import ammonite.ops._
+
+val folders = Seq("play-json", "argonaut", "circe", "circe-semiauto")
+
+folders.foreach { folder =>
+	write.over(pwd/folder/'src/'main/'scala/"CC.scala", caseClasses.mkString("\n"))
+}
+
+write.over(pwd/"argonaut"/'src/'main/'scala/"Codecs.scala", argonaut())
+write.over(pwd/"circe"/'src/'main/'scala/"Codecs.scala", circeAuto())
+write.over(pwd/"circe-semiauto"/'src/'main/'scala/"Codecs.scala", circeSemiAuto())
+
+write.over(pwd/"play-json"/'src/'main/'scala/"Codecs.scala", play())

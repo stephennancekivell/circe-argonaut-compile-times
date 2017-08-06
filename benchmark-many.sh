@@ -6,6 +6,10 @@ do
 	sbt -no-colors +clean +compile >> ../circe.log
 	cd ..
 
+	cd play-json
+	sbt -no-colors +clean +compile >> ../play-json.log
+	cd ..
+
 	cd circe-semiauto
 	sbt -no-colors +clean +compile >> ../circe-semiauto.log
 	cd ..

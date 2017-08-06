@@ -1,7 +1,5 @@
-import io.circe._, io.circe.parser._, io.circe.syntax._
-
-object Codecs {
-	import io.circe.generic.semiauto._
+ object Codecs { 
+ import io.circe._,  io.circe.parser._, io.circe.syntax._ import io.circe.generic.semiauto._
 implicit val dCC0: Decoder[CC0] = deriveDecoder
 implicit val dCC1: Decoder[CC1] = deriveDecoder
 implicit val dCC2: Decoder[CC2] = deriveDecoder
@@ -203,4 +201,4 @@ implicit val dCC197: Decoder[CC197] = deriveDecoder
 implicit val dCC198: Decoder[CC198] = deriveDecoder
 implicit val dCC199: Decoder[CC199] = deriveDecoder
 implicit val dCC200: Decoder[CC200] = deriveDecoder
-}
+ }

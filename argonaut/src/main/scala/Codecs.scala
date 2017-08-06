@@ -1,12 +1,5 @@
-
-import argonaut._
-import Argonaut._
-
-
-object Codecs {
-	
-
-import ArgonautShapeless._
+ object Codecs { 
+ import ArgonautShapeless._
 implicit val dCC0 = DecodeJson.of[CC0]
 implicit val dCC1 = DecodeJson.of[CC1]
 implicit val dCC2 = DecodeJson.of[CC2]
@@ -207,6 +200,5 @@ implicit val dCC196 = DecodeJson.of[CC196]
 implicit val dCC197 = DecodeJson.of[CC197]
 implicit val dCC198 = DecodeJson.of[CC198]
 implicit val dCC199 = DecodeJson.of[CC199]
-implicit val dCC200 = DecodeJson.of[CC200]
-
-}
+implicit val dCC200 = DecodeJson.of[CC200] 
+ }
