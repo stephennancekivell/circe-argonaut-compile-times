@@ -1,7 +1,7 @@
 
 import scala.util.Random
 
-val numCaseClasses = 200
+val numCaseClasses = 100
 val minValues = 5
 val maxValues = 15
 
@@ -36,7 +36,7 @@ def circeSemiAuto(): String = {
 		s"implicit val dCC$i: Decoder[CC$i] = deriveDecoder"
 	}
 
-	" object Codecs { \n import io.circe._,  io.circe.parser._, io.circe.syntax._, import io.circe.generic.semiauto._\n" + decoders.mkString("\n") + "\n }"
+	" object Codecs { \n import io.circe._,  io.circe.parser._, io.circe.syntax._, io.circe.generic.semiauto._\n" + decoders.mkString("\n") + "\n }"
 }
 
 def circeAuto(): String = {
@@ -47,11 +47,19 @@ def circeAuto(): String = {
 	" object Codecs { \n import io.circe._, io.circe.generic.auto._, io.circe.parser._, io.circe.syntax._\n" + decoders.mkString("\n") + "\n }"
 }
 
+def circeDerivation(): String = {
+	val decoders = (0 to numCaseClasses).map { i =>
+		s"implicit val dCC$i: Decoder[CC$i] = deriveDecoder"
+	}
+
+	" object Codecs { \n import io.circe._,  io.circe.parser._, io.circe.syntax._, io.circe.derivation._\n" + decoders.mkString("\n") + "\n }"
+}
+
 def argonaut(): String = {
 	val decoders = (0 to numCaseClasses).map { i =>
 		s"implicit val dCC$i = DecodeJson.of[CC$i]"
 	}
-	" object Codecs { \n import ArgonautShapeless._\n" + decoders.mkString("\n") + " \n }"
+	" object Codecs { \n import argonaut._, Argonaut._, ArgonautShapeless._\n" + decoders.mkString("\n") + " \n }"
 	
 }
 
@@ -74,7 +82,7 @@ println(play())
 
 import ammonite.ops._
 
-val folders = Seq("play-json", "argonaut", "circe", "circe-semiauto")
+val folders = Seq("play-json", "argonaut", "circe", "circe-semiauto", "circe-derivation")
 
 folders.foreach { folder =>
 	write.over(pwd/folder/'src/'main/'scala/"CC.scala", caseClasses.mkString("\n"))
@@ -83,5 +91,6 @@ folders.foreach { folder =>
 write.over(pwd/"argonaut"/'src/'main/'scala/"Codecs.scala", argonaut())
 write.over(pwd/"circe"/'src/'main/'scala/"Codecs.scala", circeAuto())
 write.over(pwd/"circe-semiauto"/'src/'main/'scala/"Codecs.scala", circeSemiAuto())
+write.over(pwd/"circe-derivation"/'src/'main/'scala/"Codecs.scala", circeDerivation())
 
 write.over(pwd/"play-json"/'src/'main/'scala/"Codecs.scala", play())

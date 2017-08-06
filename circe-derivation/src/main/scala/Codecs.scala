@@ -1,5 +1,5 @@
  object Codecs { 
- import io.circe._,  io.circe.parser._, io.circe.syntax._, io.circe.generic.semiauto._
+ import io.circe._,  io.circe.parser._, io.circe.syntax._, io.circe.derivation._
 implicit val dCC0: Decoder[CC0] = deriveDecoder
 implicit val dCC1: Decoder[CC1] = deriveDecoder
 implicit val dCC2: Decoder[CC2] = deriveDecoder
