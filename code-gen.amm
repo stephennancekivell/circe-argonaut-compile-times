@@ -1,0 +1,63 @@
+
+import scala.util.Random
+
+val numCaseClasses = 200
+val minValues = 5
+val maxValues = 30
+
+def randomType(maxCaseClass: Int): String = {
+	if (Random.nextBoolean || maxCaseClass == 0) {
+		if (Random.nextBoolean) {
+			"Int"
+		} else {
+			"String"
+		}
+	} else {
+		val r = (Random.nextInt % maxCaseClass).abs
+		s"CC$r"
+	}
+}
+
+val out = (0 to numCaseClasses).map { i =>
+	val noValues = (Random.nextInt % maxValues).abs + minValues
+	val values = (0 to noValues).map {	v =>
+		s"v$v: ${randomType(i)}"
+	}
+
+	s"case class CC$i(${values.mkString(", ")})"
+}
+
+println("\n\n")
+out.foreach(println)
+println("")
+
+def circeSemiAuto(): String = {
+	val decoders = (0 to numCaseClasses).map { i =>
+		s"implicit val dCC$i: Decoder[CC$i] = deriveDecoder"
+	}
+
+	"import io.circe.generic.semiauto._\n" + decoders.mkString("\n")
+}
+
+def circeAuto(): String = {
+	val decoders = (0 to numCaseClasses).map { i =>
+		s"implicit val dCC$i = implicitly[Decoder[CC$i]]"
+	}
+
+	"import io.circe.generic.auto._\n" + decoders.mkString("\n")
+}
+
+def argonaut(): String = {
+	val decoders = (0 to numCaseClasses).map { i =>
+		s"implicit val dCC$i = DecodeJson.of[CC$i]"
+	}
+	"import ArgonautShapeless._\n" + decoders.mkString("\n")
+	
+}
+
+println(argonaut())
+
+println("\nsemi-auto\n")
+println(circeSemiAuto())
+println("\nauto\n")
+println(circeAuto())
