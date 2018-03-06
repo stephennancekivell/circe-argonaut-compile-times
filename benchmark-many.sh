@@ -2,6 +2,10 @@
 
 for i in {1..2}
 do
+	cd jsoniter-scala
+	sbt -no-colors +clean +compile >> ../jsoniter-scala.log
+	cd ..
+
 	cd circe
 	sbt -no-colors +clean +compile >> ../circe.log
 	cd ..
