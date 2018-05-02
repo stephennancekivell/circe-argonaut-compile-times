@@ -1,96 +1,85 @@
 
 import scala.util.Random
 
-val numCaseClasses = 100
-val minValues = 5
-val maxValues = 15
-
-def randomType(maxCaseClass: Int): String = {
-	if (Random.nextBoolean || maxCaseClass == 0) {
-		if (Random.nextBoolean) {
-			"Int"
-		} else {
-			"String"
-		}
-	} else {
-		val r = (Random.nextInt % maxCaseClass).abs
-		s"CC$r"
-	}
-}
-
-val caseClasses = (0 to numCaseClasses).map { i =>
-	val noValues = (Random.nextInt % maxValues).abs + minValues
-	val values = (0 to noValues).map {	v =>
-		s"v$v: ${randomType(i)}"
-	}
-
-	s"case class CC$i(${values.mkString(", ")})"
-}
-
-println("\n\n")
-caseClasses.foreach(println)
-println("")
-
-def circeSemiAuto(): String = {
-	val decoders = (0 to numCaseClasses).map { i =>
-		s"implicit val dCC$i: Decoder[CC$i] = deriveDecoder"
-	}
-
-	" object Codecs { \n import io.circe._,  io.circe.parser._, io.circe.syntax._, io.circe.generic.semiauto._\n" + decoders.mkString("\n") + "\n }"
-}
-
-def circeAuto(): String = {
-	val decoders = (0 to numCaseClasses).map { i =>
-		s"implicit val dCC$i = implicitly[Decoder[CC$i]]"
-	}
-
-	" object Codecs { \n import io.circe._, io.circe.generic.auto._, io.circe.parser._, io.circe.syntax._\n" + decoders.mkString("\n") + "\n }"
-}
-
-def circeDerivation(): String = {
-	val decoders = (0 to numCaseClasses).map { i =>
-		s"implicit val dCC$i: Decoder[CC$i] = deriveDecoder"
-	}
-
-	" object Codecs { \n import io.circe._,  io.circe.parser._, io.circe.syntax._, io.circe.derivation._\n" + decoders.mkString("\n") + "\n }"
-}
-
-def argonaut(): String = {
-	val decoders = (0 to numCaseClasses).map { i =>
-		s"implicit val dCC$i = DecodeJson.of[CC$i]"
-	}
-	" object Codecs { \n import argonaut._, Argonaut._, ArgonautShapeless._\n" + decoders.mkString("\n") + " \n }"
-	
-}
-
-def play(): String = {
-val decoders = (0 to numCaseClasses).map { i =>
-		s"implicit val dCC$i: Reads[CC$i] = Json.reads[CC$i]"
-	}
-	" object Codecs { \n import play.api.libs.json._\n" + decoders.mkString("\n") + "\n }"
-	
-}
-
-println(argonaut())
-
-println("\nsemi-auto\n")
-println(circeSemiAuto())
-println("\nauto\n")
-println(circeAuto())
-println("\nauto\n")
-println(play())
-
 import ammonite.ops._
 
-val folders = Seq("play-json", "argonaut", "circe", "circe-semiauto", "circe-derivation")
+@main
+def main(numCaseClasses: Int) = {
+  
+	val minValues = 5
+	val maxValues = 15
 
-folders.foreach { folder =>
-	write.over(pwd/folder/'src/'main/'scala/"CC.scala", caseClasses.mkString("\n"))
+	def randomType(maxCaseClass: Int): String = {
+		if (Random.nextBoolean || maxCaseClass == 0) {
+			if (Random.nextBoolean) {
+				"Int"
+			} else {
+				"String"
+			}
+		} else {
+			val r = (Random.nextInt % maxCaseClass).abs
+			s"CC$r"
+		}
+	}
+
+	val caseClasses = (0 to numCaseClasses).map { i =>
+		val noValues = (Random.nextInt % maxValues).abs + minValues
+		val values = (0 to noValues).map {	v =>
+			s"v$v: ${randomType(i)}"
+		}
+
+		s"case class CC$i(${values.mkString(", ")})"
+	}
+
+	def circeSemiAuto(): String = {
+		val decoders = (0 to numCaseClasses).map { i =>
+			s"implicit val dCC$i: Decoder[CC$i] = deriveDecoder"
+		}
+
+		" object Codecs { \n import io.circe._,  io.circe.parser._, io.circe.syntax._, io.circe.generic.semiauto._\n" + decoders.mkString("\n") + "\n }"
+	}
+
+	def circeAuto(): String = {
+		val decoders = (0 to numCaseClasses).map { i =>
+			s"implicit val dCC$i = implicitly[Decoder[CC$i]]"
+		}
+
+		" object Codecs { \n import io.circe._, io.circe.generic.auto._, io.circe.parser._, io.circe.syntax._\n" + decoders.mkString("\n") + "\n }"
+	}
+
+	def circeDerivation(): String = {
+		val decoders = (0 to numCaseClasses).map { i =>
+			s"implicit val dCC$i: Decoder[CC$i] = deriveDecoder"
+		}
+
+		" object Codecs { \n import io.circe._,  io.circe.parser._, io.circe.syntax._, io.circe.derivation._\n" + decoders.mkString("\n") + "\n }"
+	}
+
+	def argonaut(): String = {
+		val decoders = (0 to numCaseClasses).map { i =>
+			s"implicit val dCC$i = DecodeJson.of[CC$i]"
+		}
+		" object Codecs { \n import argonaut._, Argonaut._, ArgonautShapeless._\n" + decoders.mkString("\n") + " \n }"
+		
+	}
+
+	def play(): String = {
+	val decoders = (0 to numCaseClasses).map { i =>
+			s"implicit val dCC$i: Reads[CC$i] = Json.reads[CC$i]"
+		}
+		" object Codecs { \n import play.api.libs.json._\n" + decoders.mkString("\n") + "\n }"		
+	}
+
+	val folders = Seq("play-json", "argonaut", "circe", "circe-semiauto", "circe-derivation")
+
+	folders.foreach { folder =>
+		write.over(pwd/folder/'src/'main/'scala/"CC.scala", caseClasses.mkString("\n"))
+	}
+
+	write.over(pwd/"argonaut"/'src/'main/'scala/"Codecs.scala", argonaut())
+	write.over(pwd/"circe"/'src/'main/'scala/"Codecs.scala", circeAuto())
+	write.over(pwd/"circe-semiauto"/'src/'main/'scala/"Codecs.scala", circeSemiAuto())
+	write.over(pwd/"circe-derivation"/'src/'main/'scala/"Codecs.scala", circeDerivation())
+	write.over(pwd/"play-json"/'src/'main/'scala/"Codecs.scala", play())
+
 }
-
-write.over(pwd/"argonaut"/'src/'main/'scala/"Codecs.scala", argonaut())
-write.over(pwd/"circe"/'src/'main/'scala/"Codecs.scala", circeAuto())
-write.over(pwd/"circe-semiauto"/'src/'main/'scala/"Codecs.scala", circeSemiAuto())
-write.over(pwd/"circe-derivation"/'src/'main/'scala/"Codecs.scala", circeDerivation())
-
-write.over(pwd/"play-json"/'src/'main/'scala/"Codecs.scala", play())
