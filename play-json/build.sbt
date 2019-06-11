@@ -1,8 +1,8 @@
 name := """play-json"""
 
-scalaVersion := "2.12.6"
-// crossScalaVersions := Seq("2.12.6", "2.12.7--bin-af4ffa87ca-SNAPSHOT")
+scalaVersion := "2.12.8"
+crossScalaVersions := Seq("2.12.8", "2.13.0")
 
 libraryDependencies ++= Seq(
-	"com.typesafe.play" %% "play-json" % "2.6.9"
+	"com.typesafe.play" %% "play-json" % "2.7.3"
 )
