@@ -10,19 +10,19 @@ do
 	sbt -no-colors +clean +compile >> ../circe.log
 	cd ..
 
-	# cd circe-semiauto
-	# sbt -no-colors clean compile >> ../circe-semiauto.log
+	# cd circe-generic-simple
+	# sbt -no-colors clean compile >> ../circe-generic-simple.log
 	# cd ..
 
 	# cd circe-derivation
 	# sbt -no-colors clean compile >> ../circe-derivation.log
 	# cd ..
 
-	cd play-json
-	sbt -no-colors +clean +compile >> ../play-json.log
-	cd ..
+	# cd play-json
+	# sbt -no-colors +clean +compile >> ../play-json.log
+	# cd ..
 
-	cd argonaut
-	sbt -no-colors +clean +compile >> ../argonaut.log
-	cd ..
+	# cd argonaut
+	# sbt -no-colors +clean +compile >> ../argonaut.log
+	# cd ..
 done

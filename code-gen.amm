@@ -78,6 +78,7 @@ def main(numCaseClasses: Int) = {
 
 	write.over(pwd/"argonaut"/'src/'main/'scala/"Codecs.scala", argonaut())
 	write.over(pwd/"circe"/'src/'main/'scala/"Codecs.scala", circeAuto())
+	write.over(pwd/"circe-generic-simple"/'src/'main/'scala/"Codecs.scala", circeSemiAuto())
 	write.over(pwd/"circe-semiauto"/'src/'main/'scala/"Codecs.scala", circeSemiAuto())
 	write.over(pwd/"circe-derivation"/'src/'main/'scala/"Codecs.scala", circeDerivation())
 	write.over(pwd/"play-json"/'src/'main/'scala/"Codecs.scala", play())
