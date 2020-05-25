@@ -55,6 +55,14 @@ def main(numCaseClasses: Int) = {
 		" object Codecs { \n import io.circe._,  io.circe.parser._, io.circe.syntax._, io.circe.derivation._\n" + decoders.mkString("\n") + "\n }"
 	}
 
+	def jsoniterScalaDerivation(): String = {
+		val decoders = (0 to numCaseClasses).map { i =>
+			s"implicit val dCC$i: JsonValueCodec[CC$i] = JsonCodecMaker.make"
+		}
+
+		" object Codecs { \n import com.github.plokhotnyuk.jsoniter_scala.core._ \n import com.github.plokhotnyuk.jsoniter_scala.macros._\n" + decoders.mkString("\n") + "\n }"
+	}
+
 	def argonaut(): String = {
 		val decoders = (0 to numCaseClasses).map { i =>
 			s"implicit val dCC$i = DecodeJson.of[CC$i]"
@@ -64,13 +72,13 @@ def main(numCaseClasses: Int) = {
 	}
 
 	def play(): String = {
-	val decoders = (0 to numCaseClasses).map { i =>
+    	val decoders = (0 to numCaseClasses).map { i =>
 			s"implicit val dCC$i: Reads[CC$i] = Json.reads[CC$i]"
 		}
 		" object Codecs { \n import play.api.libs.json._\n" + decoders.mkString("\n") + "\n }"		
 	}
 
-	val folders = Seq("play-json", "argonaut", "circe", "circe-semiauto", "circe-derivation")
+	val folders = Seq("play-json", "argonaut", "circe", "circe-semiauto", "circe-derivation", "jsoniter-scala")
 
 	folders.foreach { folder =>
 		write.over(pwd/folder/'src/'main/'scala/"CC.scala", caseClasses.mkString("\n"))
@@ -81,6 +89,7 @@ def main(numCaseClasses: Int) = {
 	write.over(pwd/"circe-generic-simple"/'src/'main/'scala/"Codecs.scala", circeSemiAuto())
 	write.over(pwd/"circe-semiauto"/'src/'main/'scala/"Codecs.scala", circeSemiAuto())
 	write.over(pwd/"circe-derivation"/'src/'main/'scala/"Codecs.scala", circeDerivation())
+	write.over(pwd/"jsoniter-scala"/'src/'main/'scala/"Codecs.scala", jsoniterScalaDerivation())
 	write.over(pwd/"play-json"/'src/'main/'scala/"Codecs.scala", play())
 
 }
