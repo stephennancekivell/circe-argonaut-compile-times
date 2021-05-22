@@ -1,9 +1,9 @@
 name := """circe"""
 
-scalaVersion := "2.12.11"
-crossScalaVersions := Seq("2.12.11", "2.13.2")
+scalaVersion := "2.13.6"
+crossScalaVersions := Seq("2.13.6", "3.0.0")
 
-val circeVersion = "0.13.0"
+val circeVersion = "0.14.0-M7"
 
 libraryDependencies ++= Seq(
   "io.circe" %% "circe-core",
